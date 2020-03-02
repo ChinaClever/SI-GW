@@ -39,7 +39,7 @@ void up_serv_task(void *arg)
 	while(1) {
 		ret = up_serv_recv(sock, ip);
 		if(ret > 0) {
-			sprintf(url, "http://%s/rtthread.rbl:1180", ip);
+			sprintf(url, "http://%s:1180", ip);
 			http_ota_fw_download(url);
 		}
 		msleep(1);
@@ -48,7 +48,7 @@ void up_serv_task(void *arg)
 
 int up_serv_thread(void)
 {
-	rt_thread_t tid = rt_thread_create("upgrade",up_serv_task, NULL,1024,2, 5);
+	rt_thread_t tid = rt_thread_create("upgrade",up_serv_task, NULL,4*1024,2, 5);
 	if (tid != RT_NULL) rt_thread_startup(tid);
 
 	return 0;
