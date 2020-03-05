@@ -1,44 +1,44 @@
 /*
  * udpservice.c
- * UDP ·þÎñ¶Ë  ÊµÏÖUDP½ÓÊÕ¹¦ÄÜ
- *  1¡¢Ìá¹©´´½¨Ì×½Ó×Ö½Ó¿Ú
- *  2¡¢Ìá¹©Êý¾Ý½ÓÊÕ½Ó¿Ú
+ * UDP ï¿½ï¿½ï¿½ï¿½ï¿½  Êµï¿½ï¿½UDPï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½
+ *  1ï¿½ï¿½ï¿½á¹©ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½Ö½Ó¿ï¿½
+ *  2ï¿½ï¿½ï¿½á¹©ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Õ½Ó¿ï¿½
  *
- *  Created on: 2016Äê7ÔÂ29ÈÕ
+ *  Created on: 2016ï¿½ï¿½7ï¿½ï¿½29ï¿½ï¿½
  *      Author: Lzy
  */
 #include "udpservice.h"
-#define UDP_PORT	18750 // ¶Ë¿ÚºÅ
+#define UDP_PORT	18750 // ï¿½Ë¿Úºï¿½
 extern void net_recv_dataPacket(dev_data_packet *pkt);
 
 /**
- * ¹¦ÄÜ£º´´½¨UDP·þÎñ¶ËÌ×½Ó×Ö
- * ·µ»Ø £ºÌ×½Ó×Ö
+ * ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½UDPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½
  */
 int udp_serviceSocket(int port)
 {
 	int sockfd;
-	struct sockaddr_in server_addr;/* Ö÷»úIPµØÖ·ºÍ¶Ë¿ÚºÅ */
+	struct sockaddr_in server_addr;/* ï¿½ï¿½ï¿½ï¿½IPï¿½ï¿½Ö·ï¿½Í¶Ë¿Úºï¿½ */
 
-	/* ´´½¨Ò»¸ösocket£¬ÀàÐÍÊÇSOCK_DGRAM£¬UDPÀàÐÍ */
+	/* ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½socketï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SOCK_DGRAMï¿½ï¿½UDPï¿½ï¿½ï¿½ï¿½ */
 	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
 	{
 		udp_printf("Socket error\n");
 		return -1;
 	}
 
-	/* ³õÊ¼»¯·þÎñ¶ËµØÖ· */
-	server_addr.sin_family = AF_INET;		/*IPv4ÒòÌØÍøÓò*/
-	server_addr.sin_port = htons(port);    /*¶Ë¿ÚºÅ£¬ÕâÀï½øÐÐÍøÂç×Ö½ÚÐòµÄ×ª»» */
+	/* ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Ö· */
+	server_addr.sin_family = AF_INET;		/*IPv4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+	server_addr.sin_port = htons(port);    /*ï¿½Ë¿ÚºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ */
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 	//server_addr.sin_addr.s_addr=htonl(INADDR_ANY);
 	memset(&(server_addr.sin_zero), 0, sizeof(server_addr.sin_zero));
 
-	/* °ó¶¨socketµ½·þÎñ¶ËµØÖ· */
+	/* ï¿½ï¿½socketï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Ö· */
 	if (bind(sockfd, (struct sockaddr *)&server_addr,
 			sizeof(struct sockaddr)) == -1)
 	{
-		/* °ó¶¨µØÖ·Ê§°Ü */
+		/* ï¿½ó¶¨µï¿½Ö·Ê§ï¿½ï¿½ */
 		udp_printf("Bind error\n");
 		return -1;
 	}
@@ -50,23 +50,23 @@ int udp_serviceSocket(int port)
 
 
 /**
- * ¹¦  ÄÜ£ºUDP Êý¾Ý½ÓÊÕ
- * ³ö¿Ú²ÎÊý£º*recv_data -> ½ÓÊÕÊý¾Ý»º³åÇø
- * ·µ  »Ø: Êý¾Ý³¤¶È
+ * ï¿½ï¿½  ï¿½Ü£ï¿½UDP ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½*recv_data -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½
+ * ï¿½ï¿½  ï¿½ï¿½: ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
  */
 int udp_serviceRecvData(int sockfd,struct sockaddr_in *client_addr,uchar *recv_data)
 {
 	int ret=0;
 	uint addr_len = sizeof(struct sockaddr);
 
-	/*³¬Ê±ÉèÖÃ*/
+	/*ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½*/
 	//	struct timeval timeout={3,0};//3S
 	//	ret=setsockopt(sockfd,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
 	//	if(ret<0)
 	//		udp_printf("UDP setsockopt Err\n");
 
-	/* ´ÓsockÖÐÊÕÈ¡×î´óBUF_SIZE - 1×Ö½ÚÊý¾Ý */
-	/* UDP²»Í¬ÓÚTCP£¬Ëü»ù±¾²»»á³öÏÖÊÕÈ¡µÄÊý¾ÝÊ§°ÜµÄÇé¿ö£¬³ý·ÇÉèÖÃÁË³¬Ê±µÈ´ý */
+	/* ï¿½ï¿½sockï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½BUF_SIZE - 1ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	/* UDPï¿½ï¿½Í¬ï¿½ï¿½TCPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½Ê±ï¿½È´ï¿½ */
 	ret = recvfrom(sockfd, recv_data, UDP_BUF_SIZE - 1, 0,
 			(struct sockaddr *)client_addr, &addr_len);
 	//	udp_printf("UDP Recv Data len:%d %s\n",ret, recv_data);
@@ -82,7 +82,7 @@ static void udp_recv_data(uchar *buf, int len)
 	if(rtn > 0) {
 		if(pkt.addr == 0xff) {
 			int addr;
-			for(addr=1; addr<=DEV_NUM; ++addr) { // Éè±¸ËùÓÐ¸±»ú
+			for(addr=1; addr<=DEV_NUM; ++addr) { // ï¿½è±¸ï¿½ï¿½ï¿½Ð¸ï¿½ï¿½ï¿½
 				pkt.addr = addr;
 				net_recv_dataPacket(&pkt);
 			}
@@ -102,19 +102,25 @@ static void udps_thread_entry(void *p)
 	struct sockaddr_in clientAddr;
 	int sock_fd = udp_serviceSocket(UDP_PORT);
 
-	while(1) {
-		memset(buf, 0, sizeof(buf));
-		rtn = udp_serviceRecvData(sock_fd, &clientAddr, buf);
-		if(rtn > 0) {
-			udp_recv_data(buf, rtn);
+	if(sock_fd!=-1)
+	{
+		while(1) {
+			memset(buf, 0, sizeof(buf));
+			rtn = udp_serviceRecvData(sock_fd, &clientAddr, buf);
+			if(rtn > 0) {
+				udp_recv_data(buf, rtn);
+			}
 		}
 	}
+	else
+	{
+		udp_printf("Socket error\n");
+	}
+
 }
 
-
-
 /**
- * ´´½¨²¢Æô¶¯ÐÄÌø°üÏß³Ì
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
  */
 void udp_recv_thread(void)
 {
