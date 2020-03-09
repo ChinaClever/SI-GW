@@ -1,7 +1,7 @@
 /*
  * udpclient.c
  *
- *  Created on: 2019Äê6ÔÂ12ÈÕ
+ *  Created on: 2019ï¿½ï¿½6ï¿½ï¿½12ï¿½ï¿½
  *      Author: luozhiyong
  */
 #include "udp_client.h"
@@ -13,11 +13,11 @@ int udp_client_init(char *url, int port)
 {
 	struct sockaddr_in *server_addr = &gUdpClientserver_addr;
 
-	/* Í¨¹ýº¯ÊýÈë¿Ú²ÎÊýurl»ñµÃhostµØÖ·£¨Èç¹ûÊÇÓòÃû£¬»á×öÓòÃû½âÎö£© */
+	/* Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½urlï¿½ï¿½ï¿½hostï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 	struct hostent *host = (struct hostent *) gethostbyname(url);
 	udp_client_close();
 
-	/* ´´½¨Ò»¸ösocket£¬ÀàÐÍÊÇSOCK_DGRAM£¬UDPÀàÐÍ */
+	/* ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½socketï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SOCK_DGRAMï¿½ï¿½UDPï¿½ï¿½ï¿½ï¿½ */
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock == -1)
 	{
@@ -26,7 +26,7 @@ int udp_client_init(char *url, int port)
 	}
 	gUdpClientSock = sock;
 
-	/* ³õÊ¼»¯Ô¤Á¬½ÓµÄ·þÎñ¶ËµØÖ· */
+	/* ï¿½ï¿½Ê¼ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ÓµÄ·ï¿½ï¿½ï¿½Ëµï¿½Ö· */
 	server_addr->sin_family = AF_INET;
 	server_addr->sin_port = htons(port);
 	server_addr->sin_addr = *((struct in_addr *)host->h_addr);
@@ -41,11 +41,10 @@ int udp_client_sent(char *send_data)
 	int ret = true;
 	int sock = gUdpClientSock;
 	struct sockaddr_in *server_addr = &gUdpClientserver_addr;
-
 	if(sock >= 0) {
-		/* ·¢ËÍÊý¾Ýµ½·þÎñÔ¶¶Ë */
+		/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ */
 		ret = sendto(sock, send_data, strlen(send_data), 0, (struct sockaddr *)server_addr, sizeof(struct sockaddr));
-		msleep(5); /* Ïß³ÌÐÝÃßÒ»¶ÎÊ±¼ä */
+		msleep(5); /* ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½ */
 	} else {
 		ret = false;
 	}
@@ -53,7 +52,7 @@ int udp_client_sent(char *send_data)
 	return ret;
 }
 
-/* ¹Ø±Õsocket */
+/* ï¿½Ø±ï¿½socket */
 void udp_client_close(void)
 {
 	int sock = gUdpClientSock;

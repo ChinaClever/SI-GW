@@ -7,7 +7,7 @@
 
 #define FS_PARTITION_NAME  "filesystem"
 
-#if 0
+#if 1
 /**
  * Function    ota_app_vtor_reconfig
  * Description Set Vector Table base location to the start addr of app(RT_APP_PART_ADDR).
