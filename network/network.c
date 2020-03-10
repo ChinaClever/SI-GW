@@ -1,14 +1,14 @@
 /*
  * network.c
  *
- *  Created on: 2019��6��27��
+ *  Created on: 2019-6-27
  *      Author: luozhiyong
  */
 #include "network.h"
 
 enum eNets { Udp=1, WebSocket};
 
-// ��̬��ʱ������ʱʱ��仯ʱ����������Ӧ
+
 void net_delay()
 {
     ushort i, d=net_dalay_get();
@@ -19,7 +19,7 @@ void net_delay()
     }
 }
 
-// ��������������
+
 void net_updata_init(void)
 {
     sNetPush *net = net_cfg_get();
@@ -34,12 +34,12 @@ int net_connect_err(struct sNetPush *net)
     net->connects++;
     int ret = net->connects * 2;
     if(ret > 60) ret = 60;
-    sleep(ret); // ��ʱ�䳤
+    sleep(ret); 
 
     return ret;
 }
 
-// ����Ƿ������ӣ�
+
 int net_check_connect(void)
 {
     sNetPush *net = net_cfg_get();

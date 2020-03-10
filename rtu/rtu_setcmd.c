@@ -1,7 +1,7 @@
 /*
  * rtu_set.c
  *
- *  Created on: 2019��10��23��
+ *  Created on: 2019-10-23
  *      Author: luozhiyong
  */
 #include "rtu_setcmd.h"
@@ -15,7 +15,7 @@ int rtu_setCmd(sRtuSetCmd *cmd)
 
 		sRtu *rtu= rtu_cfg_addr(cmd->addr);
 		list_t *list = rtu->cmds;
-		list_rpush(list, list_node_new(buf)); // ��β�����ӽڵ�
+		list_rpush(list, list_node_new(buf)); 
 	}
 
 	return packet->offLine;

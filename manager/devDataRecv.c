@@ -1,7 +1,7 @@
 /*
  * devDataRecv.c
  *
- *  Created on: 2019��10��12��
+ *  Created on: 2019-10-12
  *      Author: luozhiyong
  */
 #include "devDataSent.h"
@@ -22,14 +22,14 @@ static void setUnit(sDataUnit *unit, dev_data_packet *pkt, double rate)
 	charToShort(pkt->data, pkt->len, buf);
 
 	ushort id = pkt->addr;
-	int fn = pkt->fn[1]; //���λ��
+	int fn = pkt->fn[1]; 
 	if(fn) {
-		unit->min[fn-1] = buf[0]/rate; // ��Сֵ
-		unit->max[fn-1] = buf[1]/rate; // ���ֵ
+		unit->min[fn-1] = buf[0]/rate; 
+		unit->max[fn-1] = buf[1]/rate; 
 	} else {
 		for( i=0; i<LINE_NUM; ++i) {
-			unit->min[i] = buf[0]/rate; // ��Сֵ
-			unit->max[i] = buf[1]/rate; // ���ֵ
+			unit->min[i] = buf[0]/rate;
+			unit->max[i] = buf[1]/rate; 
 		}
 	}
 }
@@ -38,8 +38,7 @@ static void setUnit(sDataUnit *unit, dev_data_packet *pkt, double rate)
 static void setLineVol(sDevData *dev, dev_data_packet *pkt)
 {
 	int id = pkt->addr;
-	int fn = pkt->fn[1]; //���λ��
-
+	int fn = pkt->fn[1]; 
 
 	sDataUnit *unit = &(dev->line.vol);
 	setUnit(unit, pkt, COM_RATE_VOL);
@@ -56,7 +55,7 @@ static void setLineVol(sDevData *dev, dev_data_packet *pkt)
 static void setLineCur(sDevData *dev,dev_data_packet *pkt)
 {
 	int id = pkt->addr;
-	int fn = pkt->fn[1]; //���λ��
+	int fn = pkt->fn[1]; 
 	
 
 	sDataUnit *unit = &(dev->line.cur);
@@ -73,7 +72,7 @@ static void setLineCur(sDevData *dev,dev_data_packet *pkt)
 static void setEnvTem(sDevData *dev,dev_data_packet *pkt)
 {
 	int id = pkt->addr;
-	int fn = pkt->fn[1]; //���λ��
+	int fn = pkt->fn[1]; 
 	
 
 	sDataUnit *unit = &(dev->env.tem);
@@ -87,7 +86,7 @@ static void setEnvTem(sDevData *dev,dev_data_packet *pkt)
 static void setEnvHum(sDevData *dev, dev_data_packet *pkt)
 {
 	int id = pkt->addr;
-	int fn = pkt->fn[1]; //���λ��
+	int fn = pkt->fn[1]; 
 	
 
 	sDataUnit *unit = &(dev->env.hum);
@@ -100,7 +99,7 @@ static void setEnvHum(sDevData *dev, dev_data_packet *pkt)
 
 
 /**
- * ����������� ���н���
+ * 
  */
 void net_recv_dataPacket(dev_data_packet *pkt)
 {
@@ -110,18 +109,18 @@ void net_recv_dataPacket(dev_data_packet *pkt)
 	sDevData *dev = &(packet->data);
 	switch(pkt->fn[0])
 	{
-	//	case 0:  setOutputCur(pkt);	break; // �������λ����
-	case 1:  setLineVol(dev, pkt); break;	// �������ѹ
-	case 2:  setLineCur(dev, pkt); break; // ���������
-	case 3:  setEnvTem(dev, pkt); break; // ����ʪ��
-	case 4:  setEnvHum(dev, pkt); break; // ����ʪ��
-	//	case 5:  setDevName(pkt); break; // �������λ����
-	//	case 6:  setUserPwd(pkt); break; // �û���������
-	//	case 7:  setDevNet(pkt); break; // �豸������Ϣ
-	//	case 10: setOutputName(pkt); break; // �豸���λ����
-	//	case 13: setSwicth(pkt); break; // ���ÿ���
-	//	case 18: setAllSwicth(pkt); break; // �������п���
-	//	case 20: setSysCmd(pkt); break; // ϵͳ����
+	//	case 0:  setOutputCur(pkt);	break; 
+	case 1:  setLineVol(dev, pkt); break;	
+	case 2:  setLineCur(dev, pkt); break;
+	case 3:  setEnvTem(dev, pkt); break;
+	case 4:  setEnvHum(dev, pkt); break;
+	//	case 5:  setDevName(pkt); break; 
+	//	case 6:  setUserPwd(pkt); break; 
+	//	case 7:  setDevNet(pkt); break; 
+	//	case 10: setOutputName(pkt); break; 
+	//	case 13: setSwicth(pkt); break; 
+	//	case 18: setAllSwicth(pkt); break; 
+	//	case 20: setSysCmd(pkt); break; 
 	}
 }
 

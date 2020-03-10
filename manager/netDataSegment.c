@@ -3,7 +3,7 @@
  * ���ݶδ�������
  *
  *
- *  Created on: 2016��7��29��
+ *  Created on: 2016-7-29
  *      Author: Lzy
  */
 #include "netDataSegment.h"
@@ -21,52 +21,48 @@ void data_dev_code(data_code *code)
 		if(i==1) {
 			code->devCode[i] = 0;
 		} else  {
-			code->devCode[i] = 1; /*�豸����*/
+			code->devCode[i] = 1; 
 		}
 	}
 
-	code->type = TRA_TYPR_UDP; /*ͨѶ����*/
-	code->version = DATA_DEV_VERSION; /*�汾��*/
-	code->trans = DATA_MSG_CLIENT; /*����˷��ͱ�־��10H �ͻ���Ӧ���־��03H */
+	code->type = TRA_TYPR_UDP; 
+	code->version = DATA_DEV_VERSION; 
+	code->trans = DATA_MSG_CLIENT; 
 	code->reserve = 0;
 }
 
 /**
- * ���ܣ��豸���ݴ��
- * ��ڲ�����pkt->���ṹ��
- * ���ڲ�����buf->���ݰ��׵�ַ
- * ����ֵ�����ݰ�����
- * ˵������Ҫ��������ʱ�ͻ���ô˺��������ݴ��
+ 
  */
 static int msg_packet(dev_data_packet *pkt, uchar *buf)
 {
     ushort i,rtn=0;
     uchar *ptr = buf;
 
-    *(ptr++) = pkt->addr; 	/*�豸��*/
+    *(ptr++) = pkt->addr; 
 
-    *(ptr++) = pkt->fn[0]; /*������*/
+    *(ptr++) = pkt->fn[0];
     *(ptr++) = pkt->fn[1];
 
-    /*���ݳ���*/
-    *(ptr++) = (pkt->len >> 8); /*�߰�λ*/
-    *(ptr++) = (pkt->len) & 0xFF; /*�Ͱ�λ*/
+    
+    *(ptr++) = (pkt->len >> 8); 
+    *(ptr++) = (pkt->len) & 0xFF;
 
     for(i=0; i<pkt->len; ++i)
     	 *(ptr++) = pkt->data[i];
     rtn = 1 + 2 + 2 + pkt->len;
 
-    return rtn; /*���ݰ�����*/
+    return rtn; 
 }
 
 
 /**
- *  �������ݺ���
+ * 
  */
 int data_packet_sent(dev_data_packet *msg)
 {
 	ushort rtn=0;
-	static data_code devCode; /*���Ŷ�*/
+	static data_code devCode;
 	data_dev_code(&devCode);
 
 	memset(gSentBuf,0,sizeof(gSentBuf));
@@ -78,7 +74,7 @@ int data_packet_sent(dev_data_packet *msg)
 
 
 /**
- * @brief  �������
+ * @brief 
  * @param code
  * @return
  */
@@ -90,17 +86,17 @@ static int dev_code_check(data_code *code)
         if( i==1 && code->devCode[i] != 0)
             return false;
 
-        else if(i!=1 && code->devCode[i] != 1) /*�豸����*/
+        else if(i!=1 && code->devCode[i] != 1)
             return false;
     }
 
-    if((code->type != TRA_TYPR_UDP) && (code->type != TRA_TYPR_TCP))/*ͨѶ����*/
+    if((code->type != TRA_TYPR_UDP) && (code->type != TRA_TYPR_TCP))
         return false;
 
-    if(code->version != DATA_DEV_VERSION) /*�汾�ż��*/
+    if(code->version != DATA_DEV_VERSION)
         return false;
 
-    if(code->trans != DATA_MSG_SERVICE) /*���䷽��*/
+    if(code->trans != DATA_MSG_SERVICE)
         return false;
 
     return true;
@@ -108,24 +104,21 @@ static int dev_code_check(data_code *code)
 
 
 /**
- * ���ܣ��������ݰ�
- * ��ڲ�����buf->�����׵�ַ 	len->���ݳ���
- * ���ڲ�����pkt->���֮��MSG
- * ����:TRUE
+ 
  */
 static int msg_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
 {
     uchar *ptr=buf;
 
-    pkt->addr = *(ptr++);/*��ȡԴ��ַ��*/
+    pkt->addr = *(ptr++);
 
-    pkt->fn[0] = *(ptr++); /*������*/
+    pkt->fn[0] = *(ptr++);
     pkt->fn[1] = *(ptr++);
 
-    pkt->len = (*ptr) * 256 + *(ptr+1); /*���ݳ���*/
+    pkt->len = (*ptr) * 256 + *(ptr+1);
     ptr += 2;
 
-    if(pkt->len > 0) /*������*/
+    if(pkt->len > 0) 
         pkt->data = ptr;
 
     return pkt->len;
@@ -133,11 +126,7 @@ static int msg_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
 
 
 /**
- * ���ܣ��������ݰ�
- * ��ڲ�����buf->�����׵�ַ 	len->���ݳ���
- * ���ڲ�����pkt->���֮��MSG
- * ����:TRUE
- * ˵�������յ����ݰ�ʱ�ͻ���ô˺��������ݽ����MSG��ʽ
+ 
  */
 int data_packet_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
 {
@@ -145,7 +134,7 @@ int data_packet_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
     int ret = data_msg_analytic(buf,len,&msg);
     if(ret > 0)
     {
-        ret = dev_code_check(&msg.code); /*���Ŷ��ж�*/
+        ret = dev_code_check(&msg.code); 
         if(ret == true)
              ret = msg_analytic(msg.data, msg.len, pkt);
         else
