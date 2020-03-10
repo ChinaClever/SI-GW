@@ -49,12 +49,11 @@ int rtu_setCmd(sRtuSetCmd *cmd);
 int rtu_setReg(uchar addr, ushort reg, ushort value);
 int rtu_clean_ele(uchar addr);
 
+void rtu_setVolCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue);
+void rtu_setCurCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue);
+void rtu_setTemCmd(uchar addr,ushort minValue,ushort maxValue);
+void rtu_setHumCmd(uchar addr,ushort minValue,ushort maxValue);
 
-int rtu_setAllVolCmd(uchar addr,ushort minValue,ushort maxValue);
-int rtu_setAllCurCmd(uchar addr,ushort minValue,ushort maxValue);
-int rtu_setVolCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue,boolean acOrDc);//acOrDc true:AC false:DC
-int rtu_setCurCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue,boolean acOrDc);//acOrDc true:AC false:DC
-int rtu_setEnvCmd(uchar addr,ushort minValue,ushort maxValue,boolean temOrHum);//temOrHum true:Tem false:Hum
 int rtu_setBrCmd(uchar addr,int baud);
 int rtu_setAddrCmd(uchar addr,uchar changeAddr);
 #endif /* BSP_STM32_STM32F429_ATK_APOLLO_APPLICATIONS_RTU_RTU_SETCMD_H_ */

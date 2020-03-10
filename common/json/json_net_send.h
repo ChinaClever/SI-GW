@@ -12,6 +12,8 @@
 #include "cJSON.h"
 #include "data_packet.h"
 
+#define JSON_VERSION 1
+
 void json_printf(char *data);
 void json_save(char *fn, char *data);
 

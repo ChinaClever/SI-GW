@@ -18,3 +18,23 @@ sDataPacket *data_packet_get(int id)
 	return &(packets->packet[id]);
 }
 
+int data_packet_getLines(int id)
+{
+	int ret = 0;
+	sDataPacket *pack = data_packet_get(id);
+	if(pack && (pack->offLine>0)) {
+		ret = pack->data.line.size;
+	}
+	return ret;
+}
+
+int data_packet_getDc(int id)
+{
+	int ret = 0;
+	sDataPacket *pack = data_packet_get(id);
+	if(pack && (pack->offLine>0)) {
+		ret = pack->dc;
+	}
+
+	return ret;
+}

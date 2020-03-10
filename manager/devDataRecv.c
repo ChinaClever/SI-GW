@@ -2,6 +2,7 @@
  * devDataRecv.c
  *
  *  Created on: 2019-10-12
+
  *      Author: luozhiyong
  */
 #include "devDataSent.h"
@@ -43,10 +44,9 @@ static void setLineVol(sDevData *dev, dev_data_packet *pkt)
 	sDataUnit *unit = &(dev->line.vol);
 	setUnit(unit, pkt, COM_RATE_VOL);
 	if(fn) {
-		rtu_setVolCmd(id,fn,unit->min[fn-1],unit->max[fn-1],true);
-	}
-	else{
-		rtu_setVolCmd(id,fn,unit->min[0],unit->max[0],true);
+		rtu_setVolCmd(id,fn,unit->min[fn-1],unit->max[fn-1]);
+	} else{
+		rtu_setVolCmd(id,fn,unit->min[0],unit->max[0]);
 	}
 }
 
@@ -61,10 +61,9 @@ static void setLineCur(sDevData *dev,dev_data_packet *pkt)
 	sDataUnit *unit = &(dev->line.cur);
 	setUnit(unit, pkt, 1);
 	if(fn) {
-		rtu_setCurCmd(id,fn,unit->min[fn-1],unit->max[fn-1],true);
-	}
-	else{
-		rtu_setVolCmd(id,fn,unit->min[0],unit->max[0],true);
+		rtu_setCurCmd(id,fn,unit->min[fn-1],unit->max[fn-1]);
+	} else{
+		rtu_setCurCmd(id,fn,unit->min[0],unit->max[0]);
 	}
 }
 
@@ -78,7 +77,7 @@ static void setEnvTem(sDevData *dev,dev_data_packet *pkt)
 	sDataUnit *unit = &(dev->env.tem);
 	setUnit(unit, pkt, COM_RATE_VOL);
 	if(fn) {
-		rtu_setEnvCmd(id,unit->min[fn-1],unit->max[fn-1],true);
+		rtu_setTemCmd(id,unit->min[fn-1],unit->max[fn-1]);
 	}
 }
 
@@ -92,7 +91,7 @@ static void setEnvHum(sDevData *dev, dev_data_packet *pkt)
 	sDataUnit *unit = &(dev->env.hum);
 	setUnit(unit, pkt, COM_RATE_VOL);
 	if(fn) {
-		rtu_setEnvCmd(id,unit->min[fn-1],unit->max[fn-1],false);
+		rtu_setHumCmd(id,unit->min[fn-1],unit->max[fn-1]);
 	}
 }
 

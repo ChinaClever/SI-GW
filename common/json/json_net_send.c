@@ -152,7 +152,7 @@ void json_pduInfo(sDataPacket *packet, cJSON *json)
 void json_head(cJSON *json)
 {
 	cJSON_AddStringToObject(json, "company", "CLEVER");
-	cJSON_AddStringToObject(json, "version", "1.0.0");
+	cJSON_AddNumberToObject(json, "version", JSON_VERSION);
 	cJSON_AddStringToObject(json, "ip_addr", "192.168.1.163");
 }
 

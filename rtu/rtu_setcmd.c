@@ -54,77 +54,69 @@ int rtu_clean_ele(uchar addr)
 }
 
 
-int rtu_setAllVolCmd(uchar addr,ushort minValue,ushort maxValue)
+static ushort rtu_setUnitCmd(uchar addr,ushort reg, ushort minValue,ushort maxValue)
 {
-	rtu_setReg(addr,SI_MinVol1_CMD,minValue);
-	rtu_setReg(addr,SI_MaxVol1_CMD,maxValue);
-	rtu_setReg(addr,SI_MinVol2_CMD,minValue);
-	rtu_setReg(addr,SI_MaxVol2_CMD,maxValue);
-	rtu_setReg(addr,SI_MinVol3_CMD,minValue);
-	return rtu_setReg(addr,SI_MaxVol3_CMD,maxValue);
+	rtu_setReg(addr, reg++, maxValue);
+	rtu_setReg(addr, reg++,minValue);
+
+	return reg;
 }
 
-int rtu_setVolCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue,boolean acOrDc)
+static void rtu_setAllCmd(uchar addr,ushort reg, ushort minValue,ushort maxValue)
 {
-	if(acOrDc)//AC
-	{
-		if(phase==0)
-			return rtu_setAllVolCmd(addr,minValue,maxValue);
-		else
-		{
-			rtu_setReg(addr,SI_MinVol1_CMD+2*(phase-1),minValue);
-			return rtu_setReg(addr,SI_MaxVol1_CMD+2*(phase-1),maxValue);
-		}
-	}
-	else//DC
-	{
-		rtu_setReg(addr,SI_DC_MinVol_CMD,minValue);
-		return rtu_setReg(addr,SI_DC_MaxVol_CMD,maxValue);
+	int i, line = data_packet_getLines(addr);
+	for(i=0; i<line; ++i) {
+		reg = rtu_setUnitCmd(addr, reg, minValue, maxValue);
 	}
 }
 
-int rtu_setAllCurCmd(uchar addr,ushort minValue,ushort maxValue)
+void rtu_setVolCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue)
 {
-	rtu_setReg(addr,SI_MinCur1_CMD,minValue);
-	rtu_setReg(addr,SI_MaxCur1_CMD,maxValue);
-	rtu_setReg(addr,SI_MinCur2_CMD,minValue);
-	rtu_setReg(addr,SI_MaxCur2_CMD,maxValue);
-	rtu_setReg(addr,SI_MinCur3_CMD,minValue);
-	return rtu_setReg(addr,SI_MaxCur3_CMD,maxValue);
-}
-
-int rtu_setCurCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue,boolean acOrDc)
-{
-	if(acOrDc)//AC
-	{
-		if(phase==0)
-			return rtu_setAllCurCmd(addr,minValue,maxValue);
-		else
-		{
-			rtu_setReg(addr,SI_MinCur1_CMD+2*(phase-1),minValue);
-			return rtu_setReg(addr,SI_MaxCur1_CMD+2*(phase-1),maxValue);
-		}
+	ushort reg = SI_MaxVol1_CMD;
+	boolean dc = data_packet_getDc(addr);
+	if(dc) {
+		reg = SI_MaxVol1_CMD+2*(phase-1);
+	} else {
+		reg = SI_DC_MaxVol_CMD;
 	}
-	else//DC
-	{
-		rtu_setReg(addr,SI_DC_MinCur_CMD,minValue);
-		return rtu_setReg(addr,SI_DC_MaxCur_CMD,maxValue);
+
+	if(phase) {
+		rtu_setUnitCmd(addr, reg, minValue, maxValue);
+	} else {
+		rtu_setAllCmd(addr, reg, minValue, maxValue);
 	}
 }
 
-int rtu_setEnvCmd(uchar addr,ushort minValue,ushort maxValue,boolean temOrHum)
+
+void rtu_setCurCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue)
 {
-	if(temOrHum)//Tem
-	{
-		rtu_setReg(addr,SI_MinTem_CMD,minValue);
-		return rtu_setReg(addr,SI_MaxTem_CMD,maxValue);
+	ushort reg = SI_MaxCur1_CMD;
+	boolean dc = data_packet_getDc(addr);
+	if(dc) {
+		reg = SI_MaxCur1_CMD+2*(phase-1);
+	} else {
+		reg = SI_DC_MaxCur_CMD;
 	}
-	else//Hum
-	{
-		rtu_setReg(addr,SI_MinHum_CMD,minValue);
-		return rtu_setReg(addr,SI_MaxHum_CMD,maxValue);
+
+	if(phase) {
+		rtu_setUnitCmd(addr, reg, minValue, maxValue);
+	} else {
+		rtu_setAllCmd(addr, reg, minValue, maxValue);
 	}
 }
+
+void rtu_setTemCmd(uchar addr,ushort minValue,ushort maxValue)
+{
+	ushort reg = SI_MaxTem_CMD;
+	rtu_setUnitCmd(addr, reg, minValue, maxValue);
+}
+
+void rtu_setHumCmd(uchar addr,ushort minValue,ushort maxValue)
+{
+	ushort reg = SI_MaxHum_CMD;
+	rtu_setUnitCmd(addr, reg, minValue, maxValue);
+}
+
 
 int rtu_setBrCmd(uchar addr,int baud)
 {
