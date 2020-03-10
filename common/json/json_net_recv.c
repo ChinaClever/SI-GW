@@ -5,11 +5,12 @@
  *      Author: luozhiyong
  */
 #include "json_net_recv.h"
+#include "rtu_setcmd.h"
 
 typedef struct _sJsonCmd
 {
 	int dev_num, pduType, dev_spec;
-	char *ip, dev_type, dev_name;
+	char *ip, *dev_type, *dev_name;
 
 	int id, fn;
 	double min, max;
@@ -65,9 +66,11 @@ bool json_recv_company(cJSON *json)
 
 bool json_recv_version(cJSON *json)
 {
-	bool ret = false;
-	int v = json_getInt(json, "version");
-	if(v == JSON_VERSION) ret = true;
+	bool ret = json_recv_company(json);
+	if(ret) {
+		int v = json_getInt(json, "version");
+		if(v == JSON_VERSION) ret = true;
+	}
 
 	return ret;
 }
@@ -96,32 +99,18 @@ bool json_recv_headInfo(cJSON *object, sJsonCmd *cmd)
 
 
 
-bool Json_Recv::sentData(sJsonCmd &cmd)
+bool json_recv_sentData(sJsonCmd *cmd)
 {
-    Net_sDevData pkt;
+	if((cmd->max<0) ||(cmd->min<0)) return false;
 
-    pkt.addr = cmd.id;
-    pkt.fn[0] = cmd.fn;
-    pkt.fn[1] = cmd.id;
-    pkt.data = getData(cmd);
-    pkt.len = cmd.len;
-    if(pkt.len < 2) return false;
+	switch(cmd->fn) {
+	case 1: rtu_setVolCmd(cmd->dev_num, cmd->id, cmd->min, cmd->max); break;
+	case 2: rtu_setCurCmd(cmd->dev_num, cmd->id, cmd->min, cmd->max); break;
+	case 3: rtu_setTemCmd(cmd->dev_num, cmd->min, cmd->max); break;
+	case 4: rtu_setHumCmd(cmd->dev_num, cmd->min, cmd->max); break;
+	}
 
-    QString ip = cmd.ip;
-    if(ip.isEmpty()) { // 广播数据包
-        pkt.addr = 0xff;
-    }
-
-    uchar buf[64] = {0};
-    NetPackData *pack = NetPackData::bulid();
-    int len = pack->net_data_packets(cmd.pduType, &pkt, buf);
-    if(ip.isEmpty()) {
-        UdpBDSent::bulid(this)->sent(buf, len);
-    } else {
-        UdpSentSocket::bulid(this)->sentData(ip, buf, len);
-    }
-
-    return true;
+	return true;
 }
 
 
@@ -137,16 +126,16 @@ bool json_recv_itemValues(cJSON *obj, sJsonCmd *cmd, const char *key)
 	sprintf(buf, "%s_max", key);
 	cmd->max = json_getDouble(obj, key);
 
-	return sentData(cmd);
+	return json_recv_sentData(cmd);
 }
 
 
 bool json_recv_lineItem(cJSON *obj, sJsonCmd *cmd)
 {
-	cmd.fn = 1;
+	cmd->fn = 1;
 	json_recv_itemValues(obj,cmd, "vol");
 
-	cmd.fn = 2;
+	cmd->fn = 2;
 	json_recv_itemValues(obj,cmd, "cur");
 
 	return true;
@@ -176,6 +165,7 @@ bool json_recv_lineItemList(cJSON *object, sJsonCmd *cmd)
 
 bool json_recv_temItemList(cJSON *object, sJsonCmd *cmd)
 {
+	cmd->fn = 3;
 	cJSON *arr_node = cJSON_GetObjectItem(object, "tem_item_list");
 	if(arr_node->type == cJSON_Array) {
 		int size = cJSON_GetArraySize(arr_node);
@@ -191,6 +181,7 @@ bool json_recv_temItemList(cJSON *object, sJsonCmd *cmd)
 
 bool json_recv_humItemList(cJSON *object, sJsonCmd *cmd)
 {
+	cmd->fn = 4;
 	cJSON *arr_node = cJSON_GetObjectItem(object, "hum_item_list");
 	if(arr_node->type == cJSON_Array) {
 		int size = cJSON_GetArraySize(arr_node);
@@ -215,13 +206,20 @@ bool json_recv_envInfo(cJSON *object, sJsonCmd *cmd)
 
 
 
-
-
 boolean json_analysis(char *str)
 {
+	sJsonCmd cmd;
+	boolean ret = true;
 	cJSON *json = cJSON_Parse(str);  //从缓冲区中解析出JSON结构
-	boolean ret = json_recv_array(json);
-	cJSON_Delete(json); //将JSON结构所占用的数据空间释放
+	if(json) {
+		ret = json_recv_version(json);
+		if(ret) {
+			json_recv_lineItemList(json, &cmd);
+			json_recv_envInfo(json, &cmd);
+		}
+		cJSON_Delete(json); //将JSON结构所占用的数据空间释放
+	}
+
 	return ret;
 }
 

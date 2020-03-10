@@ -178,5 +178,7 @@ typedef struct sPackets {
 }sPackets;
 
 sDataPacket *data_packet_get(int id);
+int data_packet_getLines(int id);
+int data_packet_getDc(int id);
 
 #endif /* BSP_STM32_STM32F407_ATK_EXPLORER_APPLICATIONS_PACKET_DATA_PACKET_H_ */
