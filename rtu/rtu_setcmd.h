@@ -1,7 +1,7 @@
 /*
  * rtu_setcmd.h
  *
- *  Created on: 2019дЙ10тб23ху
+ *  Created on: 2019О©╫О©╫10О©╫О©╫23О©╫О©╫
  *      Author: luozhiyong
  */
 
@@ -10,37 +10,37 @@
 #include "rtu_recv.h"
 
 enum SI_SetCmdEnum {
-    SI_Addr_CMD = 0x1001, //PDU╣ьж╥
-    SI_MaxVol1_CMD,   // иХжциЩя╧Ё╛оч╠╗╬╞L1
-    SI_MinVol1_CMD,   // иХжцг╥я╧Ё╛оч╠╗╬╞L1
-    SI_MaxVol2_CMD,   // иХжциЩя╧Ё╛оч╠╗╬╞L2
-    SI_MinVol2_CMD,   // иХжцг╥я╧Ё╛оч╠╗╬╞L2
-    SI_MaxVol3_CMD,   // иХжциЩя╧Ё╛оч╠╗╬╞L3
-    SI_MinVol3_CMD,   // иХжцг╥я╧Ё╛оч╠╗╬╞L3
+    SI_Addr_CMD = 0x1001, //PDUО©╫О©╫ж╥
+    SI_MaxVol1_CMD,   // О©╫О©╫О©╫О©╫О©╫О©╫я╧О©╫О©╫О©╫ч╠О©╫О©╫О©╫L1
+    SI_MinVol1_CMD,   // О©╫О©╫О©╫О©╫г╥я╧О©╫О©╫О©╫ч╠О©╫О©╫О©╫L1
+    SI_MaxVol2_CMD,   // О©╫О©╫О©╫О©╫О©╫О©╫я╧О©╫О©╫О©╫ч╠О©╫О©╫О©╫L2
+    SI_MinVol2_CMD,   // О©╫О©╫О©╫О©╫г╥я╧О©╫О©╫О©╫ч╠О©╫О©╫О©╫L2
+    SI_MaxVol3_CMD,   // О©╫О©╫О©╫О©╫О©╫О©╫я╧О©╫О©╫О©╫ч╠О©╫О©╫О©╫L3
+    SI_MinVol3_CMD,   // О©╫О©╫О©╫О©╫г╥я╧О©╫О©╫О©╫ч╠О©╫О©╫О©╫L3
 
-    SI_MaxCur1_CMD,   // иХжц╣ГаВиооч╠╗╬╞L1
-    SI_MinCur1_CMD,   // иХжц╣ГаВобоч╠╗╬╞L1
-    SI_MaxCur2_CMD,   // иХжц╣ГаВиооч╠╗╬╞L2
-    SI_MinCur2_CMD,   // иХжц╣ГаВобоч╠╗╬╞L2
-    SI_MaxCur3_CMD,   // иХжц╣ГаВиооч╠╗╬╞L3
-    SI_MinCur3_CMD,   // иХжц╣ГаВобоч╠╗╬╞L3
+    SI_MaxCur1_CMD,   // О©╫О©╫О©╫ц╣О©╫О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫L1
+    SI_MinCur1_CMD,   // О©╫О©╫О©╫ц╣О©╫О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫L1
+    SI_MaxCur2_CMD,   // О©╫О©╫О©╫ц╣О©╫О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫L2
+    SI_MinCur2_CMD,   // О©╫О©╫О©╫ц╣О©╫О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫L2
+    SI_MaxCur3_CMD,   // О©╫О©╫О©╫ц╣О©╫О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫L3
+    SI_MinCur3_CMD,   // О©╫О©╫О©╫ц╣О©╫О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫L3
 
-    SI_MaxTem_CMD,   // иХжцнб╤хиооч╠╗╬╞ж╣
-    SI_MinTem_CMD,   // иХжцнб╤хобоч╠╗╬╞ж╣2
-    SI_MaxHum_CMD,   // иХжцй╙╤х╤хиооч╠╗╬╞ж╣
-    SI_MinHum_CMD,   // иХжцй╙╤хобоч╠╗╬╞ж╣
+    SI_MaxTem_CMD,   // О©╫О©╫О©╫О©╫О©╫б╤О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫ж╣
+    SI_MinTem_CMD,   // О©╫О©╫О©╫О©╫О©╫б╤О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫ж╣2
+    SI_MaxHum_CMD,   // О©╫О©╫О©╫О©╫й╙О©╫х╤О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫ж╣
+    SI_MinHum_CMD,   // О©╫О©╫О©╫О©╫й╙О©╫О©╫О©╫О©╫О©╫ч╠О©╫О©╫О©╫ж╣
 
-    SI_BR_CMD, // иХжц╡╗льбйё╗01н╙4800ё╛02н╙9600ё╛03н╙19200ё╛04н╙38400ё╘
-    SI_ELE_CMD, // ╣Гдэж╣гЕаЦ ё╗1111 0000втвСмЫсррю╢нн╙╣зр╩жа╣з╤Ч║╒╣зхЩоЮ╨мж╠аВё╘
+    SI_BR_CMD, // О©╫О©╫О©╫ц╡О©╫О©╫О©╫О©╫йёО©╫01н╙4800О©╫О©╫02н╙9600О©╫О©╫03н╙19200О©╫О©╫04н╙38400О©╫О©╫
+    SI_ELE_CMD, // О©╫О©╫О©╫О©╫ж╣О©╫О©╫О©╫О©╫ О©╫О©╫1111 0000О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫н╙О©╫О©╫р╩О©╫О©╫О©╫з╤О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ж╠О©╫О©╫О©╫О©╫
 
-    SI_DC_MaxVol_CMD,   // иХжцж╠аВ╣Гя╧╠╗╬╞иооч
-    SI_DC_MinVol_CMD,   // иХжцж╠аВ╣Гя╧╠╗╬╞обоч
-	SI_DC_MaxCur_CMD,   // иХжцж╠я╧╣ГаВ╠╗╬╞иооч
-	SI_DC_MinCur_CMD,   // иХжцж╠аВ╣ГаВ╠╗╬╞обоч
+    SI_DC_MaxVol_CMD,   // О©╫О©╫О©╫О©╫ж╠О©╫О©╫О©╫О©╫я╧О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+    SI_DC_MinVol_CMD,   // О©╫О©╫О©╫О©╫ж╠О©╫О©╫О©╫О©╫я╧О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+	SI_DC_MaxCur_CMD,   // О©╫О©╫О©╫О©╫ж╠я╧О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+	SI_DC_MinCur_CMD,   // О©╫О©╫О©╫О©╫ж╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
-	SI_Mode_CMD, // Modbus RTU дёй╫гп╩╩
-	// 00 00╠Мй╬╧╚к╬╠Йв╪Modbus RTUдёй╫(╤ах║╧╕дэбК	н╙ 0x03ё╛иХжц╧╕дэбКн╙ 0x10)
-	// 00 01 ппр╣╠Йв╪ Modbus RTU дёй╫(╤ах║╧╕дэбКн╙	0x03ё╛иХжц╧╕дэбКн╙ 0x06)
+	SI_Mode_CMD, // Modbus RTU дёй╫О©╫п╩О©╫
+	// 00 00О©╫О©╫й╬О©╫О©╫к╬О©╫О©╫в╪Modbus RTUдёй╫(О©╫О©╫х║О©╫О©╫О©╫О©╫О©╫О©╫	н╙ 0x03О©╫О©╫О©╫О©╫О©╫ц╧О©╫О©╫О©╫О©╫О©╫н╙ 0x10)
+	// 00 01 О©╫О©╫р╣О©╫О©╫в╪ Modbus RTU дёй╫(О©╫О©╫х║О©╫О©╫О©╫О©╫О©╫О©╫н╙	0x03О©╫О©╫О©╫О©╫О©╫ц╧О©╫О©╫О©╫О©╫О©╫н╙ 0x06)
 	// 01 10 10 19 00 01 D4 CE
 };
 
@@ -49,4 +49,12 @@ int rtu_setCmd(sRtuSetCmd *cmd);
 int rtu_setReg(uchar addr, ushort reg, ushort value);
 int rtu_clean_ele(uchar addr);
 
+
+int rtu_setAllVolCmd(uchar addr,ushort minValue,ushort maxValue);
+int rtu_setAllCurCmd(uchar addr,ushort minValue,ushort maxValue);
+int rtu_setVolCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue,boolean acOrDc);//acOrDc true:AC false:DC
+int rtu_setCurCmd(uchar addr,uchar phase,ushort minValue,ushort maxValue,boolean acOrDc);//acOrDc true:AC false:DC
+int rtu_setEnvCmd(uchar addr,ushort minValue,ushort maxValue,boolean temOrHum);//temOrHum true:Tem false:Hum
+int rtu_setBrCmd(uchar addr,int baud);
+int rtu_setAddrCmd(uchar addr,uchar changeAddr);
 #endif /* BSP_STM32_STM32F429_ATK_APOLLO_APPLICATIONS_RTU_RTU_SETCMD_H_ */

@@ -1,14 +1,14 @@
 /*
  * network.c
  *
- *  Created on: 2019Äê6ÔÂ27ÈÕ
+ *  Created on: 2019ï¿½ï¿½6ï¿½ï¿½27ï¿½ï¿½
  *      Author: luozhiyong
  */
 #include "network.h"
 
 enum eNets { Udp=1, WebSocket};
 
-// ¶¯Ì¬ÑÓÊ±£¬µ±ÑÓÊ±Ê±¼ä±ä»¯Ê±Á¢¼´×ö³öÏìÓ¦
+// ï¿½ï¿½Ì¬ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ê±ï¿½ï¿½ä»¯Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦
 void net_delay()
 {
     ushort i, d=net_dalay_get();
@@ -19,7 +19,7 @@ void net_delay()
     }
 }
 
-// ¸ù¾İÌõ¼şÀ´Á¬½Ó
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void net_updata_init(void)
 {
     sNetPush *net = net_cfg_get();
@@ -34,20 +34,20 @@ int net_connect_err(struct sNetPush *net)
     net->connects++;
     int ret = net->connects * 2;
     if(ret > 60) ret = 60;
-    sleep(ret); // ÑÓÊ±±ä³¤
+    sleep(ret); // ï¿½ï¿½Ê±ï¿½ä³¤
 
     return ret;
 }
 
-// ¼ì²éÊÇ·ñÒÑÁ¬½Ó£¬
+// ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½
 int net_check_connect(void)
 {
     sNetPush *net = net_cfg_get();
     int ret = net->en;
 
-//    net->en = 1;
-//    sprintf(net->url, "192.168.1.215");
-//    net->port = 8080;
+   net->en = 1;
+   sprintf(net->url, "192.168.100.216");
+   net->port = 8098;
 
     if(ret > 0) {
         switch(net->en) {

@@ -1,9 +1,9 @@
 /*
  * datasegment.c
- * Êý¾Ý¶Î´ò°ü£¬½â°ü
+ * ï¿½ï¿½ï¿½Ý¶Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  *
  *
- *  Created on: 2016Äê7ÔÂ29ÈÕ
+ *  Created on: 2016ï¿½ï¿½7ï¿½ï¿½29ï¿½ï¿½
  *      Author: Lzy
  */
 #include "netDataSegment.h"
@@ -21,52 +21,52 @@ void data_dev_code(data_code *code)
 		if(i==1) {
 			code->devCode[i] = 0;
 		} else  {
-			code->devCode[i] = 1; /*Éè±¸´úºÅ*/
+			code->devCode[i] = 1; /*ï¿½è±¸ï¿½ï¿½ï¿½ï¿½*/
 		}
 	}
 
-	code->type = TRA_TYPR_UDP; /*Í¨Ñ¶ÀàÐÍ*/
-	code->version = DATA_DEV_VERSION; /*°æ±¾ºÅ*/
-	code->trans = DATA_MSG_CLIENT; /*·þÎñ¶Ë·¢ËÍ±êÖ¾£º10H ¿Í»§¶ËÓ¦´ð±êÖ¾£º03H */
+	code->type = TRA_TYPR_UDP; /*Í¨Ñ¶ï¿½ï¿½ï¿½ï¿½*/
+	code->version = DATA_DEV_VERSION; /*ï¿½æ±¾ï¿½ï¿½*/
+	code->trans = DATA_MSG_CLIENT; /*ï¿½ï¿½ï¿½ï¿½Ë·ï¿½ï¿½Í±ï¿½Ö¾ï¿½ï¿½10H ï¿½Í»ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½03H */
 	code->reserve = 0;
 }
 
 /**
- * ¹¦ÄÜ£ºÉè±¸Êý¾Ý´ò°ü
- * Èë¿Ú²ÎÊý£ºpkt->°ü½á¹¹ÐÝ
- * ³ö¿Ú²ÎÊý£ºbuf->Êý¾Ý°üÊ×µØÖ·
- * ·µ»ØÖµ£ºÊý¾Ý°ü³¤¶È
- * ËµÃ÷£ºµ±Òª·¢ËÍÊý¾ÝÊ±¾Í»áµ÷ÓÃ´Ëº¯Êý°ÑÊý¾Ý´ò°ü
+ * ï¿½ï¿½ï¿½Ü£ï¿½ï¿½è±¸ï¿½ï¿½ï¿½Ý´ï¿½ï¿½
+ * ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½pkt->ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+ * ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½buf->ï¿½ï¿½ï¿½Ý°ï¿½ï¿½×µï¿½Ö·
+ * ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½
+ * Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Í»ï¿½ï¿½ï¿½Ã´Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½
  */
 static int msg_packet(dev_data_packet *pkt, uchar *buf)
 {
     ushort i,rtn=0;
     uchar *ptr = buf;
 
-    *(ptr++) = pkt->addr; 	/*Éè±¸ºÅ*/
+    *(ptr++) = pkt->addr; 	/*ï¿½è±¸ï¿½ï¿½*/
 
-    *(ptr++) = pkt->fn[0]; /*¹¦ÄÜÂë*/
+    *(ptr++) = pkt->fn[0]; /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     *(ptr++) = pkt->fn[1];
 
-    /*Êý¾Ý³¤¶È*/
-    *(ptr++) = (pkt->len >> 8); /*¸ß°ËÎ»*/
-    *(ptr++) = (pkt->len) & 0xFF; /*µÍ°ËÎ»*/
+    /*ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½*/
+    *(ptr++) = (pkt->len >> 8); /*ï¿½ß°ï¿½Î»*/
+    *(ptr++) = (pkt->len) & 0xFF; /*ï¿½Í°ï¿½Î»*/
 
     for(i=0; i<pkt->len; ++i)
     	 *(ptr++) = pkt->data[i];
     rtn = 1 + 2 + 2 + pkt->len;
 
-    return rtn; /*Êý¾Ý°ü³¤¶È*/
+    return rtn; /*ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½*/
 }
 
 
 /**
- *  ·¢ËÍÊý¾Ýº¯Êý
+ *  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýºï¿½ï¿½ï¿½
  */
 int data_packet_sent(dev_data_packet *msg)
 {
 	ushort rtn=0;
-	static data_code devCode; /*´úºÅ¶Î*/
+	static data_code devCode; /*ï¿½ï¿½ï¿½Å¶ï¿½*/
 	data_dev_code(&devCode);
 
 	memset(gSentBuf,0,sizeof(gSentBuf));
@@ -78,26 +78,29 @@ int data_packet_sent(dev_data_packet *msg)
 
 
 /**
- * @brief  ¼ì²é´úÂë¶Î
+ * @brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * @param code
  * @return
  */
 static int dev_code_check(data_code *code)
 {
 	int i;
-    for(i=0; i<DEV_CODE_SIZE; ++i)
+   for(i=0; i<DEV_CODE_SIZE; ++i)
     {
-        if(code->devCode[i] != 1) /*Éè±¸´úºÅ*/
+        if( i==1 && code->devCode[i] != 0)
+            return false;
+
+        else if(i!=1 && code->devCode[i] != 1) /*ï¿½è±¸ï¿½ï¿½ï¿½ï¿½*/
             return false;
     }
 
-    if((code->type != TRA_TYPR_UDP) && (code->type != TRA_TYPR_TCP))/*Í¨Ñ¶ÀàÐÍ*/
+    if((code->type != TRA_TYPR_UDP) && (code->type != TRA_TYPR_TCP))/*Í¨Ñ¶ï¿½ï¿½ï¿½ï¿½*/
         return false;
 
-    if(code->version != DATA_DEV_VERSION) /*°æ±¾ºÅ¼ì²é*/
+    if(code->version != DATA_DEV_VERSION) /*ï¿½æ±¾ï¿½Å¼ï¿½ï¿½*/
         return false;
 
-    if(code->trans != DATA_MSG_SERVICE) /*´«Êä·½Ïò*/
+    if(code->trans != DATA_MSG_SERVICE) /*ï¿½ï¿½ï¿½ä·½ï¿½ï¿½*/
         return false;
 
     return true;
@@ -105,24 +108,24 @@ static int dev_code_check(data_code *code)
 
 
 /**
- * ¹¦ÄÜ£º½âÎöÊý¾Ý°ü
- * Èë¿Ú²ÎÊý£ºbuf->Êý¾ÝÊ×µØÖ· 	len->Êý¾Ý³¤¶È
- * ³ö¿Ú²ÎÊý£ºpkt->´ò°üÖ®ºóMSG
- * ·µ»Ø:TRUE
+ * ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½
+ * ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½buf->ï¿½ï¿½ï¿½ï¿½ï¿½×µï¿½Ö· 	len->ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½pkt->ï¿½ï¿½ï¿½Ö®ï¿½ï¿½MSG
+ * ï¿½ï¿½ï¿½ï¿½:TRUE
  */
 static int msg_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
 {
     uchar *ptr=buf;
 
-    pkt->addr = *(ptr++);/*»ñÈ¡Ô´µØÖ·Âë*/
+    pkt->addr = *(ptr++);/*ï¿½ï¿½È¡Ô´ï¿½ï¿½Ö·ï¿½ï¿½*/
 
-    pkt->fn[0] = *(ptr++); /*¹¦ÄÜÂë*/
+    pkt->fn[0] = *(ptr++); /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     pkt->fn[1] = *(ptr++);
 
-    pkt->len = (*ptr) * 256 + *(ptr+1); /*Êý¾Ý³¤¶È*/
+    pkt->len = (*ptr) * 256 + *(ptr+1); /*ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½*/
     ptr += 2;
 
-    if(pkt->len > 0) /*Êý¾ÝÇø*/
+    if(pkt->len > 0) /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         pkt->data = ptr;
 
     return pkt->len;
@@ -130,11 +133,11 @@ static int msg_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
 
 
 /**
- * ¹¦ÄÜ£º½âÎöÊý¾Ý°ü
- * Èë¿Ú²ÎÊý£ºbuf->Êý¾ÝÊ×µØÖ· 	len->Êý¾Ý³¤¶È
- * ³ö¿Ú²ÎÊý£ºpkt->´ò°üÖ®ºóMSG
- * ·µ»Ø:TRUE
- * ËµÃ÷£ºµ±ÊÕµ½Êý¾Ý°üÊ±¾Í»áµ÷ÓÃ´Ëº¯Êý°ÑÊý¾Ý½â°ü³ÉMSG¸ñÊ½
+ * ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½
+ * ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½buf->ï¿½ï¿½ï¿½ï¿½ï¿½×µï¿½Ö· 	len->ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½pkt->ï¿½ï¿½ï¿½Ö®ï¿½ï¿½MSG
+ * ï¿½ï¿½ï¿½ï¿½:TRUE
+ * Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½Ý°ï¿½Ê±ï¿½Í»ï¿½ï¿½ï¿½Ã´Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ï¿½MSGï¿½ï¿½Ê½
  */
 int data_packet_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
 {
@@ -142,7 +145,7 @@ int data_packet_analytic(uchar *buf, ushort len, dev_data_packet *pkt)
     int ret = data_msg_analytic(buf,len,&msg);
     if(ret > 0)
     {
-        ret = dev_code_check(&msg.code); /*´úºÅ¶ÎÅÐ¶Ï*/
+        ret = dev_code_check(&msg.code); /*ï¿½ï¿½ï¿½Å¶ï¿½ï¿½Ð¶ï¿½*/
         if(ret == true)
              ret = msg_analytic(msg.data, msg.len, pkt);
         else

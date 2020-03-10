@@ -1,7 +1,7 @@
 /*
  * devDataRecv.c
  *
- *  Created on: 2019Äê10ÔÂ12ÈÕ
+ *  Created on: 2019ï¿½ï¿½10ï¿½ï¿½12ï¿½ï¿½
  *      Author: luozhiyong
  */
 #include "devDataSent.h"
@@ -22,14 +22,14 @@ static void setUnit(sDataUnit *unit, dev_data_packet *pkt, double rate)
 	charToShort(pkt->data, pkt->len, buf);
 
 	ushort id = pkt->addr;
-	int fn = pkt->fn[1]; //Êä³öÎ»£¬
+	int fn = pkt->fn[1]; //ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	if(fn) {
-		unit->min[fn-1] = buf[0]/rate; // ×îĞ¡Öµ
-		unit->max[fn-1] = buf[1]/rate; // ×î´óÖµ
+		unit->min[fn-1] = buf[0]/rate; // ï¿½ï¿½Ğ¡Öµ
+		unit->max[fn-1] = buf[1]/rate; // ï¿½ï¿½ï¿½Öµ
 	} else {
 		for( i=0; i<LINE_NUM; ++i) {
-			unit->min[i] = buf[0]/rate; // ×îĞ¡Öµ
-			unit->max[i] = buf[1]/rate; // ×î´óÖµ
+			unit->min[i] = buf[0]/rate; // ï¿½ï¿½Ğ¡Öµ
+			unit->max[i] = buf[1]/rate; // ï¿½ï¿½ï¿½Öµ
 		}
 	}
 }
@@ -37,60 +37,70 @@ static void setUnit(sDataUnit *unit, dev_data_packet *pkt, double rate)
 
 static void setLineVol(sDevData *dev, dev_data_packet *pkt)
 {
-//	int id = pkt->addr;
-//	int fn = pkt->fn[1]; //Êä³öÎ»£¬
-//	if(fn) {
-//
-//	}
+	int id = pkt->addr;
+	int fn = pkt->fn[1]; //ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+
 
 	sDataUnit *unit = &(dev->line.vol);
 	setUnit(unit, pkt, COM_RATE_VOL);
+	if(fn) {
+		rtu_setVolCmd(id,fn,unit->min[fn-1],unit->max[fn-1],true);
+	}
+	else{
+		rtu_setVolCmd(id,fn,unit->min[0],unit->max[0],true);
+	}
 }
 
 
 
 static void setLineCur(sDevData *dev,dev_data_packet *pkt)
 {
-//	int id = pkt->addr;
-//	int fn = pkt->fn[1]; //Êä³öÎ»£¬
-//	if(fn) {
-//
-//	}
+	int id = pkt->addr;
+	int fn = pkt->fn[1]; //ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	
 
 	sDataUnit *unit = &(dev->line.cur);
 	setUnit(unit, pkt, 1);
+	if(fn) {
+		rtu_setCurCmd(id,fn,unit->min[fn-1],unit->max[fn-1],true);
+	}
+	else{
+		rtu_setVolCmd(id,fn,unit->min[0],unit->max[0],true);
+	}
 }
 
 
 static void setEnvTem(sDevData *dev,dev_data_packet *pkt)
 {
-//	int id = pkt->addr;
-//	int fn = pkt->fn[1]; //Êä³öÎ»£¬
-//	if(fn) {
-//
-//	}
+	int id = pkt->addr;
+	int fn = pkt->fn[1]; //ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	
 
 	sDataUnit *unit = &(dev->env.tem);
 	setUnit(unit, pkt, COM_RATE_VOL);
+	if(fn) {
+		rtu_setEnvCmd(id,unit->min[fn-1],unit->max[fn-1],true);
+	}
 }
 
 
 static void setEnvHum(sDevData *dev, dev_data_packet *pkt)
 {
 	int id = pkt->addr;
-	int fn = pkt->fn[1]; //Êä³öÎ»£¬
-	if(fn) {
-
-	}
+	int fn = pkt->fn[1]; //ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	
 
 	sDataUnit *unit = &(dev->env.hum);
 	setUnit(unit, pkt, COM_RATE_VOL);
+	if(fn) {
+		rtu_setEnvCmd(id,unit->min[fn-1],unit->max[fn-1],false);
+	}
 }
 
 
 
 /**
- * ÍøÂç½ÓÊÕÊı¾İ ½øĞĞ½âÎö
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ğ½ï¿½ï¿½ï¿½
  */
 void net_recv_dataPacket(dev_data_packet *pkt)
 {
@@ -100,18 +110,18 @@ void net_recv_dataPacket(dev_data_packet *pkt)
 	sDevData *dev = &(packet->data);
 	switch(pkt->fn[0])
 	{
-	//	case 0:  setOutputCur(pkt);	break; // ÉèÖÃÊä³öÎ»µçÁ÷
-	case 1:  setLineVol(dev, pkt); break;	// ÉèÖÃÏàµçÑ¹
-	case 2:  setLineCur(dev, pkt); break; // ÉèÖÃÏàµçÁ÷
-	case 3:  setEnvTem(dev, pkt); break; // ÉèÖÃÊª¶È
-	case 4:  setEnvHum(dev, pkt); break; // ÉèÖÃÊª¶È
-	//	case 5:  setDevName(pkt); break; // ÉèÖÃÊä³öÎ»Ãû³Æ
-	//	case 6:  setUserPwd(pkt); break; // ÓÃ»§ÃûºÍÃÜÂë
-	//	case 7:  setDevNet(pkt); break; // Éè±¸ÍøÂçĞÅÏ¢
-	//	case 10: setOutputName(pkt); break; // Éè±¸Êä³öÎ»Ãû³Æ
-	//	case 13: setSwicth(pkt); break; // ÉèÖÃ¿ª¹Ø
-	//	case 18: setAllSwicth(pkt); break; // ÉèÖÃËùÓĞ¿ª¹Ø
-	//	case 20: setSysCmd(pkt); break; // ÏµÍ³ÃüÁî
+	//	case 0:  setOutputCur(pkt);	break; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+	case 1:  setLineVol(dev, pkt); break;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹
+	case 2:  setLineCur(dev, pkt); break; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	case 3:  setEnvTem(dev, pkt); break; // ï¿½ï¿½ï¿½ï¿½Êªï¿½ï¿½
+	case 4:  setEnvHum(dev, pkt); break; // ï¿½ï¿½ï¿½ï¿½Êªï¿½ï¿½
+	//	case 5:  setDevName(pkt); break; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+	//	case 6:  setUserPwd(pkt); break; // ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//	case 7:  setDevNet(pkt); break; // ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+	//	case 10: setOutputName(pkt); break; // ï¿½è±¸ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+	//	case 13: setSwicth(pkt); break; // ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½
+	//	case 18: setAllSwicth(pkt); break; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¿ï¿½ï¿½ï¿½
+	//	case 20: setSysCmd(pkt); break; // ÏµÍ³ï¿½ï¿½ï¿½ï¿½
 	}
 }
 
