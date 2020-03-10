@@ -1,6 +1,6 @@
 /*
  * datasegment.c
- * ���ݶδ�������
+ * 
  *
  *
  *  Created on: 2016-7-29
