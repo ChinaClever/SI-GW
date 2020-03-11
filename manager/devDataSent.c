@@ -255,7 +255,7 @@ static void sent_devData(uchar id, pduDevData *devData)
 	msg.fn[0] = fn++;
 	sent_envObject(&(devData->env), buf,&msg);
 
-	//sent_devStatus(&msg, 1);
+	sent_devStatus(&msg, 1);
 }
 
 

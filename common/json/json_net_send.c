@@ -140,9 +140,12 @@ int json_envs(sEnvData *ObjData, cJSON *json)
 void json_pduInfo(sDataPacket *packet, cJSON *json)
 {
 	cJSON *obj = cJSON_CreateObject();
+	cJSON_AddStringToObject(json, "pdu_ip", "192.168.1.163");
 	cJSON_AddStringToObject(obj, "pdu_name", "SI-PDU");
+	cJSON_AddStringToObject(obj, "pdu_type", "SI-PDU");
 	cJSON_AddNumberToObject(obj, "pdu_num", packet->id);
-	cJSON_AddNumberToObject(obj, "pdu_spec", packet->devSpec);
+	cJSON_AddNumberToObject(obj, "pdu_spec", 0);
+	cJSON_AddNumberToObject(obj, "pdu_phase", packet->devSpec);
 	cJSON_AddNumberToObject(obj, "pdu_dc", packet->dc);
 	cJSON_AddNumberToObject(obj, "pdu_hz", packet->hz);
 	cJSON_AddNumberToObject(obj, "pdu_ver", packet->version);
