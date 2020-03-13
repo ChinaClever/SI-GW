@@ -140,7 +140,7 @@ int json_envs(sEnvData *ObjData, cJSON *json)
 void json_pduInfo(sDataPacket *packet, cJSON *json)
 {
 	cJSON *obj = cJSON_CreateObject();
-	cJSON_AddStringToObject(json, "pdu_ip", "192.168.1.163");
+	cJSON_AddStringToObject(json, "pdu_ip", "192.168.1.163");/////////////////////暂时写死 pmd 2020-3-11
 	cJSON_AddStringToObject(obj, "pdu_name", "SI-PDU");
 	cJSON_AddStringToObject(obj, "pdu_type", "SI-PDU");
 	cJSON_AddNumberToObject(obj, "pdu_num", packet->id);
@@ -148,7 +148,7 @@ void json_pduInfo(sDataPacket *packet, cJSON *json)
 	cJSON_AddNumberToObject(obj, "pdu_phase", packet->devSpec);
 	cJSON_AddNumberToObject(obj, "pdu_dc", packet->dc);
 	cJSON_AddNumberToObject(obj, "pdu_hz", packet->hz);
-	cJSON_AddNumberToObject(obj, "pdu_ver", packet->version);
+	cJSON_AddNumberToObject(obj, "pdu_ver", packet->version);/////////////////////这个值可能没有赋值 pmd 2020-3-11
 	cJSON_AddItemToObject(json, "pdu_info", obj);
 }
 
@@ -156,7 +156,7 @@ void json_head(cJSON *json)
 {
 	cJSON_AddStringToObject(json, "company", "CLEVER");
 	cJSON_AddNumberToObject(json, "version", JSON_VERSION);
-	cJSON_AddStringToObject(json, "ip_addr", "192.168.1.163");
+	cJSON_AddStringToObject(json, "ip_addr", "192.168.1.163");/////////////////////暂时写死 pmd 2020-3-11
 }
 
 // 返回Buf 需释放 free(buf) ，不然会内存泻
