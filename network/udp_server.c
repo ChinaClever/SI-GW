@@ -6,7 +6,7 @@
  */
 #include "udp_server.h"
 
-#define UDP_SERV_BUFSZ   382
+#define UDP_SERV_BUFSZ   1024
 static char udp_ser_buf[UDP_SERV_BUFSZ];
 
 int udp_serv_init(int port)
@@ -41,7 +41,7 @@ int udp_serv_init(int port)
 	return ret;
 }
 
-int udp_serv_recv(int sock, char *recv_data, int len)
+int udp_serv_recv(int sock, char* recv_data,int len)
 {
 	struct sockaddr_in client_addr;
 	socklen_t addr_len = sizeof(struct sockaddr);
@@ -50,7 +50,7 @@ int udp_serv_recv(int sock, char *recv_data, int len)
 	if(sock >= 0) {
 		bytes_read = recvfrom(sock, recv_data, len-1, 0, (struct sockaddr *)&client_addr, &addr_len);
 		recv_data[bytes_read] = '\0'; /* 把末端清零 */ /* UDP不同于TCP，它基本不会出现收取的数据失败的情况，除非设置了超时等待 */
-		// rt_kprintf("\n(%s , %d) said : ", inet_ntoa(client_addr.sin_addr),ntohs(client_addr.sin_port));
+		//rt_kprintf("\n(%s , %d) said : %d , %s", inet_ntoa(client_addr.sin_addr),ntohs(client_addr.sin_port),bytes_read,recv_data);
 	}
 	msleep(1);
 
@@ -65,7 +65,8 @@ void udp_serv_task(void *arg)
 	char *buf = udp_ser_buf;
 
 	while(1) {
-		ret = udp_serv_recv(sock, buf, UDP_SERV_BUFSZ);
+		rt_memset(buf, 0, sizeof(buf));
+		ret = udp_serv_recv(sock , buf , UDP_SERV_BUFSZ);
 		if(ret > 0) {
 			json_analysis(buf);
 		}
@@ -75,6 +76,6 @@ void udp_serv_task(void *arg)
 
 void udp_serv_thread(void)
 {
-	rt_thread_t tid = rt_thread_create("net_serv",udp_serv_task, NULL,2*512,26, 15);
+	rt_thread_t tid = rt_thread_create("net_serv",udp_serv_task, NULL,4*512,26, 15);
 	if (tid != RT_NULL) rt_thread_startup(tid);
 }

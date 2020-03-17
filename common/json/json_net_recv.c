@@ -59,6 +59,7 @@ bool json_recv_company(cJSON *json)
 	const char *str = json_getString(json, "company");
 	ret = strncmp(str, strName, strlen(strName));
 	if(ret) ret = false;
+	else ret = true;
 
 	return ret;
 }
@@ -68,8 +69,9 @@ bool json_recv_version(cJSON *json)
 {
 	bool ret = json_recv_company(json);
 	if(ret) {
-		int v = json_getInt(json, "version");
-		if(v == JSON_VERSION) ret = true;
+		char *str = NULL;
+		str = json_getString(json, "version");
+		if(str) ret = true;
 	}
 
 	return ret;
@@ -80,12 +82,12 @@ bool json_recv_headInfo(cJSON *object, sJsonCmd *cmd)
 {
 	bool ret = false;
 	char *str = "SI-PDU";
-	cJSON *obj = cJSON_GetObjectItem(object, "head_info");
+	cJSON *obj = cJSON_GetObjectItem(object, "pdu_info");
 	if(obj) {
-		cmd->ip = json_getString(obj, "ip");
-		cmd->dev_type = json_getString(obj, "dev_type");
-		cmd->dev_num = json_getInt(obj, "dev_num");
-		cmd->dev_name = json_getString(obj, "dev_name");
+		cmd->ip = json_getString(obj, "pdu_ip");
+		cmd->dev_type = json_getString(obj, "pdu_spec");
+		cmd->dev_num = json_getInt(obj, "pdu_num");
+		cmd->dev_name = json_getString(obj, "pdu_name");
 
 		ret = strncmp(cmd->dev_type, str, strlen(str));
 		if(0 == ret) {
@@ -115,16 +117,18 @@ bool json_recv_sentData(sJsonCmd *cmd)
 
 
 
-bool json_recv_itemValues(cJSON *obj, sJsonCmd *cmd, const char *key)
+bool json_recv_itemValues(cJSON *obj, sJsonCmd *cmd, const char *key,int rate)
 {
 	char buf[24] = {0};
 	cmd->id = json_getInt(obj, "id");
 
+	rt_memset(buf, 0, sizeof(buf));
 	sprintf(buf, "%s_min", key);
-	cmd->min = json_getDouble(obj, key);
+	cmd->min = json_getInt(obj, buf)*rate;
 
+	rt_memset(buf, 0, sizeof(buf));
 	sprintf(buf, "%s_max", key);
-	cmd->max = json_getDouble(obj, key);
+	cmd->max = json_getInt(obj, buf)*rate;
 
 	return json_recv_sentData(cmd);
 }
@@ -133,10 +137,10 @@ bool json_recv_itemValues(cJSON *obj, sJsonCmd *cmd, const char *key)
 bool json_recv_lineItem(cJSON *obj, sJsonCmd *cmd)
 {
 	cmd->fn = 1;
-	json_recv_itemValues(obj,cmd, "vol");
+	json_recv_itemValues(obj,cmd, "vol",1);
 
 	cmd->fn = 2;
-	json_recv_itemValues(obj,cmd, "cur");
+	json_recv_itemValues(obj,cmd, "cur",10);
 
 	return true;
 }
@@ -147,12 +151,15 @@ bool json_recv_lineItem(cJSON *obj, sJsonCmd *cmd)
 bool json_recv_lineItemList(cJSON *object, sJsonCmd *cmd)
 {
 	cJSON *arr_node = cJSON_GetObjectItem(object, "line_item_list");
-	if(arr_node->type == cJSON_Array) {
-		int i, size = cJSON_GetArraySize(arr_node);
-		cJSON *arr_item = arr_node->child;// 获取数组对象孩子节点 子对象
-		for(i=0; i<size; ++i){
-			json_recv_lineItem(arr_item, cmd);
-			arr_item = arr_item->next;//下一个子对象
+	if(arr_node)
+	{
+		if(arr_node->type == cJSON_Array) {
+			int i, size = cJSON_GetArraySize(arr_node);
+			cJSON *arr_item = arr_node->child;// 获取数组对象孩子节点 子对象
+			for(i=0; i<size; ++i){
+				json_recv_lineItem(arr_item, cmd);
+				arr_item = arr_item->next;//下一个子对象
+			}
 		}
 	}
 
@@ -171,7 +178,7 @@ bool json_recv_temItemList(cJSON *object, sJsonCmd *cmd)
 		int size = cJSON_GetArraySize(arr_node);
 		if(size > 0) {
 			cJSON *arr_item = cJSON_GetArrayItem(arr_node,0);
-			json_recv_itemValues(arr_item, cmd, "tem");
+			json_recv_itemValues(arr_item, cmd, "tem",1);
 		}
 	}
 
@@ -187,7 +194,7 @@ bool json_recv_humItemList(cJSON *object, sJsonCmd *cmd)
 		int size = cJSON_GetArraySize(arr_node);
 		if(size > 0) {
 			cJSON *arr_item = cJSON_GetArrayItem(arr_node,0);
-			json_recv_itemValues(arr_item, cmd, "hum");
+			json_recv_itemValues(arr_item, cmd, "hum",1);
 		}
 	}
 
@@ -198,8 +205,11 @@ bool json_recv_humItemList(cJSON *object, sJsonCmd *cmd)
 bool json_recv_envInfo(cJSON *object, sJsonCmd *cmd)
 {
 	cJSON *obj = cJSON_GetObjectItem(object, "env_info");
-	json_recv_temItemList(obj, cmd);
-	json_recv_humItemList(obj, cmd);
+	if(obj)
+	{
+		json_recv_temItemList(obj, cmd);
+		json_recv_humItemList(obj, cmd);
+	}
 
 	return true;
 }
@@ -212,10 +222,13 @@ boolean json_analysis(char *str)
 	boolean ret = true;
 	cJSON *json = cJSON_Parse(str);  //从缓冲区中解析出JSON结构
 	if(json) {
-		ret = json_recv_version(json);
-		if(ret) {
-			json_recv_lineItemList(json, &cmd);
-			json_recv_envInfo(json, &cmd);
+		ret = json_recv_headInfo(json,&cmd);
+		if(ret){
+			ret = json_recv_version(json);
+			if(ret) {
+				json_recv_lineItemList(json, &cmd);
+				json_recv_envInfo(json, &cmd);
+			}
 		}
 		cJSON_Delete(json); //将JSON结构所占用的数据空间释放
 	}

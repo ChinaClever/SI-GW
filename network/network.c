@@ -95,7 +95,7 @@ void net_updata_task(void *arg)
 
 int net_work_thread(void)
 {
-    rt_thread_t tid = rt_thread_create("net_work",net_updata_task, NULL, 4*512,25, 25);
+    rt_thread_t tid = rt_thread_create("net_work",net_updata_task, NULL, 6*512,25, 25);
     if (tid != RT_NULL) rt_thread_startup(tid);
 
     return 0;
