@@ -87,7 +87,7 @@ typedef struct sTgObjData
 
     uint ele; // 电能
     uint pf; // 功率因素
-    uint activePow; // 袖在功率
+    uint activePow; // 视在功率
     uint tem;
 }sTgObjData;
 

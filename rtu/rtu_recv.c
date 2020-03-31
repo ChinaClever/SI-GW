@@ -175,7 +175,7 @@ static uchar *rtu_recv_data(uchar *ptr, int line, sDataPacket *packet)
 	rtu_recv_alarm(unit, line);
 
 	unit = &(lineObj->cur);
-	ptr =  rtu_recv_unit(ptr, line, &(lineObj->cur));
+	ptr =  rtu_recv_unit(ptr, line, unit);
 	rtu_recv_alarm(unit, line);
 
 	sEnvData *env  = &(packet->data.env);
@@ -196,11 +196,12 @@ static uchar *rtu_recv_data(uchar *ptr, int line, sDataPacket *packet)
 	packet->br =  *(ptr++); // 波特率
 
 	ptr =  rtu_recv_powData(ptr, line, lineObj->pow);
-	ptr =  rtu_recv_shortData(ptr, line, lineObj->pf); // 功率因素
+	ptr =  rtu_recv_charData(ptr, line, (uchar *)lineObj->pf); // 功率因素
 	ptr =  rtu_recv_charData(ptr, line, lineObj->sw); // 开关状态
 
 	if(line > 1) {
-		packet->hz =  *(ptr++); // 频率
+		ptr += 2;
+		packet->hz =  (*ptr) * 256 + *(ptr+1);  ptr += 2;// 频率
 	} else {
 		packet->devSpec =  *(ptr++);
 		lineObj->pl[0] = *(ptr++); // 负载百分比
